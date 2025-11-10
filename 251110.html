@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Web Vitals最適化実績 - SEOポートフォリオ</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #1a237e;
+            line-height: 1.6;
+        }
+        
+        .poster {
+            width: 720px;
+            min-height: 960px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(63, 81, 181, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(33, 150, 243, 0.07) 0%, transparent 50%),
+                linear-gradient(0deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+            z-index: -1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 46px;
+            font-weight: 900;
+            color: #1a237e;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: #3f51b5;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .author-name {
+            font-size: 20px;
+            color: #5c6bc0;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title .material-icons {
+            margin-right: 12px;
+            color: #3f51b5;
+        }
+        
+        .philosophy-content {
+            font-size: 18px;
+            line-height: 1.7;
+            padding: 16px;
+            background: rgba(63, 81, 181, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #3f51b5;
+        }
+        
+        .certifications {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .certification-card {
+            flex: 1;
+            min-width: 280px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(63, 81, 181, 0.1);
+        }
+        
+        .certification-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 16px;
+            border-radius: 8px;
+        }
+        
+        .certification-info {
+            flex: 1;
+        }
+        
+        .certification-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .certification-name .material-icons {
+            font-size: 18px;
+            margin-right: 6px;
+            color: #3f51b5;
+        }
+        
+        .certification-desc {
+            font-size: 14px;
+            color: #5c6bc0;
+        }
+        
+        .certification-date {
+            font-size: 12px;
+            color: #9e9e9e;
+            margin-top: 4px;
+        }
+        
+        .case-study {
+            margin-bottom: 32px;
+            position: relative;
+        }
+        
+        .case-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .case-title .material-icons {
+            margin-right: 8px;
+            color: #3f51b5;
+        }
+        
+        .url {
+            font-size: 16px;
+            color: #3f51b5;
+            margin-bottom: 16px;
+            font-family: monospace;
+            background: rgba(63, 81, 181, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            word-break: break-all;
+        }
+        
+        .challenge {
+            background: rgba(244, 67, 54, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            margin-bottom: 16px;
+        }
+        
+        .strategy {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin-bottom: 16px;
+        }
+        
+        .implementation {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+            margin-bottom: 16px;
+        }
+        
+        .result {
+            background: rgba(255, 152, 0, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .ranking-improvement {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        
+        .ranking-before {
+            font-size: 36px;
+            font-weight: 700;
+            color: #f44336;
+            margin-right: 20px;
+        }
+        
+        .ranking-arrow {
+            font-size: 36px;
+            color: #3f51b5;
+            margin-right: 20px;
+        }
+        
+        .ranking-after {
+            font-size: 36px;
+            font-weight: 700;
+            color: #4caf50;
+        }
+        
+        .project-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        
+        .project-table th, .project-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(63, 81, 181, 0.2);
+        }
+        
+        .project-table th {
+            background: rgba(63, 81, 181, 0.1);
+            font-weight: 600;
+        }
+        
+        .improvement {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+        
+        .metrics-intro {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        
+        .metric-card {
+            flex: 1;
+            min-width: 180px;
+            background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 0 8px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
+        }
+        
+        .metric-card h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        
+        .metric-card p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .metrics-table th, .metrics-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(63, 81, 181, 0.2);
+        }
+        
+        .metrics-table th {
+            background: rgba(63, 81, 181, 0.1);
+            font-weight: 600;
+        }
+        
+        .optimization-list {
+            margin-bottom: 16px;
+        }
+        
+        .optimization-list ul {
+            padding-left: 24px;
+        }
+        
+        .optimization-list li {
+            margin-bottom: 8px;
+        }
+        
+        .optimization-period {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .overall-results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .result-card {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 0 8px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+        
+        .result-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .result-card p {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .approach-list {
+            margin-top: 16px;
+        }
+        
+        .approach-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .approach-item .material-icons {
+            margin-right: 12px;
+            color: #3f51b5;
+            flex-shrink: 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(transparent 50%, rgba(255, 235, 59, 0.3) 50%);
+            padding: 0 4px;
+        }
+        
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(63, 81, 181, 0.3), transparent);
+            margin: 30px 0;
+        }
+        
+        .note {
+            background: rgba(63, 81, 181, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #3f51b5;
+            margin-top: 16px;
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        .note-box {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        
+        .content-seo-note {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+            margin-top: 16px;
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        .ga-method {
+            background: rgba(156, 39, 176, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #9c27b0;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        
+        .ga-method h4 {
+            color: #9c27b0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ga-method h4 .material-icons {
+            font-size: 18px;
+            margin-right: 6px;
+        }
+        
+        .affiliate-badge {
+            background: linear-gradient(135deg, #5c6bc0 0%, #7986cb 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .affiliate-badge .material-icons {
+            margin-right: 6px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <div class="background-pattern"></div>
+        
+        <header class="header">
+            <h1 class="title">異なる視点で、同じ目標に。</h1>
+            <p class="subtitle">SEOポートフォリオ</p>
+            <p class="author-name">Jun Saito</p>
+        </header>
+        
+        <!-- 私の哲学 -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="material-icons">psychology</span>
+                私の哲学
+            </h2>
+            
+            <div class="affiliate-badge">
+                <span class="material-icons">business_center</span>
+                6年間の個人事業主としてのSEOアフィリエイト実務経験
+            </div>
+            
+            <div class="philosophy-content">
+                元々は個人事業のSEOアフィリエイターとして、自らの収益に直結するシビアな環境で成果を追求してきました。<br><br>
+                
+                その経験から、単なる順位上昇ではなく、ビジネスの成長に貢献する「意味のあるトラフィック」を生み出すことを信条としています。私が重視するのは、順位という数字の裏側にある「生きたユーザーの行動」です。Clarityなどのツールを用いて実際のユーザー行動をレコーディングやヒートマップで可視化し、「なぜ離脱するのか」「何に興味を持っているのか」という問いに対するデータに基づいた仮説を立て、次の施策に繋げます。
+            </div>
+            
+            <div class="certifications">
+                <div class="certification-card">
+                    <span class="material-icons" style="font-size: 48px; color: #3f51b5; margin-right: 16px;">analytics</span>
+                    <div class="certification-info">
+                        <div class="certification-name">
+                            <span class="material-icons">verified</span>
+                            Googleアナリティクス個人認定資格
+                        </div>
+                        <div class="certification-desc">データ分析と効果測定の専門知識</div>
+                    </div>
+                </div>
+                
+                <div class="certification-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/ba74e9e6-4e76-4e63-a31c-a4990a45c7b5_pasted_image_1762699725448.png?auth_key=1862699734-baae9f6c90354cbc987df4b75eeebbf5-0-48d6d41c747b07f1306771e410c35de7" alt="SEO検定1級" class="certification-logo">
+                    <div class="certification-info">
+                        <div class="certification-name">
+                            <span class="material-icons">verified</span>
+                            SEO検定1級
+                        </div>
+                        <div class="certification-desc">SEOの専門知識と実践能力</div>
+                        <div class="certification-date">2025年6月30日取得</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 検索順位改善パート -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="material-icons">trending_up</span>
+                順位改善実績
+            </h2>
+            
+            <div class="case-study">
+                <h3 class="case-title">
+                    <span class="material-icons">people</span>
+                    人事評価システム比較
+                </h3>
+                <div class="url">https://meetsmore.com/product-services/personnel-evaluation-system</div>
+                
+                <div class="challenge">
+                    <strong>課題：</strong>評価制度という組織の根幹に関わるテーマであり、ユーザーは慎重に情報を吟味する傾向がある。信頼性の高い情報提供が不可欠。
+                </div>
+                
+                <div class="strategy">
+                    <strong>分析と戦略：</strong>ユーザーは機能比較だけでなく、実際の導入企業のリアルな声を求めていると仮説。口コミや導入事例を拡充し、意思決定を後押しするコンテンツを目指す。
+                </div>
+                
+                <div class="implementation">
+                    <strong>施策実施：</strong>H1を「人事評価システム比較おすすめ20選」とし、OKRや360度評価など多様な評価手法に対応するシステムを分類・整理。48,392文字のコンテンツで専門性を高めた。
+                </div>
+                
+                <div class="result">
+                    <strong>効果：</strong>検索順位大幅改善
+                    <div class="ranking-improvement">
+                        <div class="ranking-before">25位</div>
+                        <div class="ranking-arrow">→</div>
+                        <div class="ranking-after">11位</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-study">
+                <h3 class="case-title">
+                    <span class="material-icons">calculate</span>
+                    給与計算ソフト比較
+                </h3>
+                <div class="url">https://meetsmore.com/product-services/salary-calculation</div>
+                
+                <div class="challenge">
+                    <strong>課題：</strong>情報の正確性と信頼性が極めて重要なKW。他社との差別化が難しく、順位が停滞。
+                </div>
+                
+                <div class="strategy">
+                    <strong>分析と戦略：</strong>ユーザーは「自社の既存システムと連携できるか」を重要視していると分析。連携可能なシステムを軸にした比較コンテンツが有効と判断。
+                </div>
+                
+                <div class="implementation">
+                    <strong>施策実施：</strong>H1を「給与計算ソフト比較おすすめ21選」とし、各ソフトの連携機能やセキュリティ対策について詳細に記述。40,239字のコンテンツで専門性を強化。
+                </div>
+                
+                <div class="result">
+                    <strong>効果：</strong>検索順位大幅改善
+                    <div class="ranking-improvement">
+                        <div class="ranking-before">19位</div>
+                        <div class="ranking-arrow">→</div>
+                        <div class="ranking-after">7位</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-study">
+                <h3 class="case-title">
+                    <span class="material-icons">school</span>
+                    eラーニングシステム比較
+                </h3>
+                <div class="url">https://meetsmore.com/product-services/e-learning</div>
+                
+                <div class="challenge">
+                    <strong>課題：</strong>リスキリングや人的資本経営への関心の高まりから検索需要が拡大している成長市場のKW。情報の網羅性が求められる。
+                </div>
+                
+                <div class="strategy">
+                    <strong>分析と戦略：</strong>ユーザーは「価格」だけでなく「教材の質」や「サポート体制」を多角的に比較したいと考えていると仮説。詳細な比較表とレビューが鍵と判断。
+                </div>
+                
+                <div class="implementation">
+                    <strong>施策実施：</strong>H1を「eラーニングシステム比較おすすめ31選」とし、市場の主要な選択肢を網羅。52,592字のボリュームで、多角的な比較軸を提供。
+                </div>
+                
+                <div class="result">
+                    <strong>効果：</strong>検索順位大幅改善
+                    <div class="ranking-improvement">
+                        <div class="ranking-before">17位</div>
+                        <div class="ranking-arrow">→</div>
+                        <div class="ranking-after">7位</div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="project-table">
+                <tr>
+                    <th>記事KW</th>
+                    <th>施策前 順位</th>
+                    <th>施策後 最高順位</th>
+                    <th>改善幅</th>
+                </tr>
+                <tr>
+                    <td>人事評価システム 比較</td>
+                    <td>25</td>
+                    <td>11</td>
+                    <td class="improvement">+14</td>
+                </tr>
+                <tr>
+                    <td>給与計算ソフト 比較</td>
+                    <td>19</td>
+                    <td>7</td>
+                    <td class="improvement">+12</td>
+                </tr>
+                <tr>
+                    <td>eラーニングシステム 比較</td>
+                    <td>17</td>
+                    <td>7</td>
+                    <td class="improvement">+10</td>
+                </tr>
+                <tr>
+                    <td>離職防止ツール 比較</td>
+                    <td>11</td>
+                    <td>7</td>
+                    <td class="improvement">+4</td>
+                </tr>
+                <tr>
+                    <td>契約書管理システム 比較</td>
+                    <td>26</td>
+                    <td>24</td>
+                    <td class="improvement">+2</td>
+                </tr>
+                <tr>
+                    <td>年末調整ソフト 比較</td>
+                    <td>9</td>
+                    <td>8</td>
+                    <td class="improvement">+1</td>
+                </tr>
+            </table>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- パフォーマンス最適化パート -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="material-icons">speed</span>
+                Core Web Vitals最適化実績
+            </h2>
+            
+            <div class="metrics-intro">
+                <div class="metric-card">
+                    <h3>LCP</h3>
+                    <p>読み込み速度<br>2.5秒以内が目標</p>
+                </div>
+                <div class="metric-card">
+                    <h3>INP</h3>
+                    <p>操作応答性<br>200ミリ秒以内が目標</p>
+                </div>
+                <div class="metric-card">
+                    <h3>CLS</h3>
+                    <p>視覚的安定性<br>0.1以下が目標</p>
+                </div>
+            </div>
+            
+            <div class="note-box">
+                <strong>注：</strong>2024年3月より、GoogleはFID（First Input Delay）からINP（Interaction to Next Paint）へ指標を変更しました。INPはページの操作応答性をより包括的に評価します。
+            </div>
+            
+            <div class="ga-method">
+                <h4><span class="material-icons">analytics</span>GA4基本レポートによるパフォーマンス分析</h4>
+                <p>Google Analytics 4の基本レポートを活用し、Core Web Vitalsとユーザー行動の関連性を分析。パフォーマンスデータとコンバージョン率の相関関係を特定し、最適化の優先順位を決定。</p>
+            </div>
+            
+            <div class="case-study">
+                <h3 class="case-title">
+                    <span class="material-icons">people</span>
+                    人事評価システム比較
+                </h3>
+                
+                <table class="metrics-table">
+                    <tr>
+                        <th>指標</th>
+                        <th>最適化前</th>
+                        <th>最適化後</th>
+                        <th>改善</th>
+                    </tr>
+                    <tr>
+                        <td>LCP</td>
+                        <td>2.8秒</td>
+                        <td>1.5秒</td>
+                        <td class="improvement">-46%</td>
+                    </tr>
+                    <tr>
+                        <td>INP</td>
+                        <td>180ms</td>
+                        <td>151ms</td>
+                        <td class="improvement">-16%</td>
+                    </tr>
+                    <tr>
+                        <td>CLS</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td class="improvement">0%</td>
+                    </tr>
+                    <tr>
+                        <td>FCP</td>
+                        <td>2.2秒</td>
+                        <td>1.3秒</td>
+                        <td class="improvement">-41%</td>
+                    </tr>
+                    <tr>
+                        <td>TTFB</td>
+                        <td>1.2秒</td>
+                        <td>0.8秒</td>
+                        <td class="improvement">-33%</td>
+                    </tr>
+                </table>
+                
+                <div class="optimization-list">
+                    <h4>最適化手法:</h4>
+                    <ul>
+                        <li>コンテンツの最適化と構造改善</li>
+                        <li>画像の最適化と表示速度の改善</li>
+                        <li>CSS/JavaScriptの最適化と統合</li>
+                        <li>ユーザー体験を改善する遅延読み込みの最適化</li>
+                    </ul>
+                    <div class="optimization-period">最適化期間：約3ヶ月</div>
+                </div>
+            </div>
+            
+            <div class="case-study">
+                <h3 class="case-title">
+                    <span class="material-icons">calculate</span>
+                    給与計算ソフト比較
+                </h3>
+                
+                <table class="metrics-table">
+                    <tr>
+                        <th>指標</th>
+                        <th>最適化前</th>
+                        <th>最適化後</th>
+                        <th>改善</th>
+                    </tr>
+                    <tr>
+                        <td>LCP</td>
+                        <td>3.0秒</td>
+                        <td>1.6秒</td>
+                        <td class="improvement">-47%</td>
+                    </tr>
+                    <tr>
+                        <td>INP</td>
+                        <td>200ms</td>
+                        <td>145ms</td>
+                        <td class="improvement">-28%</td>
+                    </tr>
+                    <tr>
+                        <td>CLS</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td class="improvement">0%</td>
+                    </tr>
+                    <tr>
+                        <td>FCP</td>
+                        <td>2.4秒</td>
+                        <td>1.4秒</td>
+                        <td class="improvement">-42%</td>
+                    </tr>
+                    <tr>
+                        <td>TTFB</td>
+                        <td>1.3秒</td>
+                        <td>0.9秒</td>
+                        <td class="improvement">-31%</td>
+                    </tr>
+                </table>
+                
+                <div class="optimization-list">
+                    <h4>最適化手法:</h4>
+                    <ul>
+                        <li>コンテンツの最適化と構造改善</li>
+                        <li>画像の最適化と表示速度の改善</li>
+                        <li>CSS/JavaScriptの最適化と統合</li>
+                        <li>ユーザー体験を改善する遅延読み込みの最適化</li>
+                    </ul>
+                    <div class="optimization-period">最適化期間：約3ヶ月</div>
+                </div>
+            </div>
+            
+            <div class="case-study">
+                <h3 class="case-title">
+                    <span class="material-icons">school</span>
+                    eラーニングシステム比較
+                </h3>
+                
+                <table class="metrics-table">
+                    <tr>
+                        <th>指標</th>
+                        <th>最適化前</th>
+                        <th>最適化後</th>
+                        <th>改善</th>
+                    </tr>
+                    <tr>
+                        <td>LCP</td>
+                        <td>3.5秒</td>
+                        <td>1.7秒</td>
+                        <td class="improvement">-51%</td>
+                    </tr>
+                    <tr>
+                        <td>INP</td>
+                        <td>280ms</td>
+                        <td>160ms</td>
+                        <td class="improvement">-43%</td>
+                    </tr>
+                    <tr>
+                        <td>CLS</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td class="improvement">0%</td>
+                    </tr>
+                    <tr>
+                        <td>FCP</td>
+                        <td>2.8秒</td>
+                        <td>1.5秒</td>
+                        <td class="improvement">-46%</td>
+                    </tr>
+                    <tr>
+                        <td>TTFB</td>
+                        <td>1.8秒</td>
+                        <td>1.0秒</td>
+                        <td class="improvement">-44%</td>
+                    </tr>
+                </table>
+                
+                <div class="optimization-list">
+                    <h4>最適化手法:</h4>
+                    <ul>
+                        <li>コンテンツの最適化と構造改善</li>
+                        <li>画像の最適化と表示速度の改善</li>
+                        <li>CSS/JavaScriptの最適化と統合</li>
+                        <li>ユーザー体験を改善する遅延読み込みの最適化</li>
+                    </ul>
+                    <div class="optimization-period">最適化期間：約3ヶ月</div>
+                </div>
+            </div>
+            
+            <div class="overall-results">
+                <div class="result-card">
+                    <h3>平均LCP改善率</h3>
+                    <p>-48%</p>
+                </div>
+                <div class="result-card">
+                    <h3>平均INP改善率</h3>
+                    <p>-29%</p>
+                </div>
+                <div class="result-card">
+                    <h3>平均CLS改善率</h3>
+                    <p>0%</p>
+                </div>
+                <div class="result-card">
+                    <h3>平均検索順位改善</h3>
+                    <p>+12位</p>
+                </div>
+                <div class="result-card">
+                    <h3>平均コンバージョン率向上</h3>
+                    <p>+12%</p>
+                </div>
+            </div>
+            
+            <div class="approach-list">
+                <div class="approach-item">
+                    <span class="material-icons">check_circle</span>
+                    <div>
+                        Core Web Vitalsの<span class="highlight">基本理解</span>とWordPress環境での実践的対応
+                    </div>
+                </div>
+                <div class="approach-item">
+                    <span class="material-icons">check_circle</span>
+                    <div>
+                        WordPress<span class="highlight">プラグイン活用</span>によるパフォーマンス最適化
+                    </div>
+                </div>
+                <div class="approach-item">
+                    <span class="material-icons">check_circle</span>
+                    <div>
+                        GA4の<span class="highlight">基本機能</span>を活用したデータ分析と改善効果の測定
+                    </div>
+                </div>
+                <div class="approach-item">
+                    <span class="material-icons">check_circle</span>
+                    <div>
+                        ビジネス目標と<span class="highlight">WordPress環境</span>に合わせた最適化戦略
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-seo-note">
+                <strong>注記：</strong>当ポートフォリオは主にコンテンツSEOを強みとしており、Core Web Vitals最適化はWordPress環境での基本的な改善に留めています。専門的な技術的最適化よりも、売上に直結するページ作成、導線設計、セールスライティングを重視しています。
+            </div>
+            
+            <div class="note">
+                <strong>技術的注記：</strong>最適化実績は主にWordPress環境での実務経験に基づいています。プラグインの活用と基本的な設定最適化を中心としたアプローチにより、現実的な改善を実現しています。
+            </div>
+        </section>
+    </div>
+</body>
+</html>
